@@ -3,70 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Private Chat</title>
+<title>Messenger</title>
 <style>
-  :root { --bg:#f3f6f4; --card:#fff; --me:#0f766e; --me-text:#fff; --them:#e4ebe7; --text:#14201c; --muted:#6b7a74; }
+  :root { --bg:#fff; --bar:#fff; --text:#050505; --muted:#65676b; --pill:#f0f2f5; --blue:#0084ff; --them:#e4e6eb; --line:#e4e6eb; }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#101614; --card:#18211e; --me:#14b8a6; --me-text:#04201c; --them:#24312c; --text:#e8f0ec; --muted:#8fa19a; }
+    :root { --bg:#18191a; --bar:#242526; --text:#e4e6eb; --muted:#b0b3b8; --pill:#3a3b3c; --blue:#2d88ff; --them:#3a3b3c; --line:#3a3b3c; }
   }
-  * { box-sizing:border-box; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; margin:0; }
-  body { font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+  body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
   .screen { display:none; height:100%; flex-direction:column; }
   .screen.on { display:flex; }
-  header { padding:14px 16px; padding-top:calc(14px + env(safe-area-inset-top,0px)); background:var(--card); font-weight:600; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  header button { background:none; color:var(--me); padding:0; font-size:15px; }
-  .pad { padding:20px; display:flex; flex-direction:column; gap:12px; margin:auto 0; }
-  .pad h1 { margin:0 0 4px; font-size:24px; }
-  input { padding:12px 14px; border-radius:12px; border:1px solid var(--them); background:var(--card); color:var(--text); font-size:16px; width:100%; }
-  button { padding:12px 18px; border:0; border-radius:12px; background:var(--me); color:var(--me-text); font-weight:600; font-size:16px; }
-  button.link { background:none; color:var(--me); padding:6px; }
-  .err { color:#dc2626; font-size:14px; min-height:18px; }
-  .row { display:flex; gap:8px; padding:10px; }
-  .row input { flex:1; }
+  button { border:0; background:none; color:inherit; font:inherit; cursor:pointer; }
+  input { font:inherit; color:var(--text); }
+  .av { border-radius:50%; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; flex-shrink:0; }
+  .top { display:flex; align-items:center; gap:12px; padding:10px 14px; padding-top:calc(10px + env(safe-area-inset-top,0px)); background:var(--bar); }
+  .top h1 { margin:0; font-size:26px; flex:1; }
+  .top .name { font-weight:600; font-size:17px; flex:1; }
+  .ib { width:38px; height:38px; border-radius:50%; background:var(--pill); display:flex; align-items:center; justify-content:center; }
+  .ib svg { width:20px; height:20px; fill:var(--text); }
+  .search { display:flex; gap:8px; padding:8px 14px 12px; background:var(--bar); }
+  .search input { flex:1; background:var(--pill); border:0; border-radius:20px; padding:10px 16px; font-size:16px; outline:none; }
+  .search button { width:40px; height:40px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; }
+  .search svg { width:20px; height:20px; fill:#fff; }
+  .err { color:#e41e3f; font-size:14px; padding:0 16px; min-height:0; }
   #list { flex:1; overflow-y:auto; }
-  .c { padding:14px 16px; border-bottom:1px solid var(--them); cursor:pointer; }
-  .c b { display:block; }
-  .c span { color:var(--muted); font-size:14px; }
-  .empty { padding:24px; color:var(--muted); text-align:center; }
-  #msgs { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:8px; }
-  .m { max-width:78%; padding:8px 12px; border-radius:14px; background:var(--them); word-wrap:break-word; }
-  .m.me { align-self:flex-end; background:var(--me); color:var(--me-text); }
-  .m .t { font-size:11px; opacity:.6; text-align:right; margin-top:2px; }
-  #sendf { display:flex; gap:8px; padding:10px; padding-bottom:calc(10px + env(safe-area-inset-bottom,0px)); background:var(--card); }
-  #sendf input { flex:1; border-radius:22px; }
-  #sendf button { border-radius:22px; }
+  .c { display:flex; align-items:center; gap:12px; padding:10px 14px; }
+  .c:active { background:var(--pill); }
+  .c .mid { flex:1; min-width:0; }
+  .c .nm { font-weight:600; font-size:16px; }
+  .c .pv { color:var(--muted); font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .empty { padding:40px 24px; color:var(--muted); text-align:center; }
+  #msgs { flex:1; overflow-y:auto; padding:12px 10px; display:flex; flex-direction:column; gap:2px; }
+  .tm { align-self:center; color:var(--muted); font-size:12px; margin:10px 0 6px; }
+  .m { max-width:75%; padding:8px 12px; border-radius:18px; background:var(--them); word-wrap:break-word; font-size:16px; line-height:1.3; align-self:flex-start; }
+  .m.me { align-self:flex-end; background:var(--blue); color:#fff; }
+  .m.big { font-size:34px; background:none; padding:0 4px; }
+  .m.gap { margin-top:8px; }
+  .comp { display:flex; align-items:center; gap:8px; padding:8px 10px; padding-bottom:calc(8px + env(safe-area-inset-bottom,0px)); background:var(--bar); }
+  .comp input { flex:1; background:var(--pill); border:0; border-radius:20px; padding:10px 16px; font-size:16px; outline:none; }
+  .comp button { width:40px; height:40px; font-size:26px; display:flex; align-items:center; justify-content:center; }
+  .comp svg { width:26px; height:26px; fill:var(--blue); }
+  .pad { margin:auto 0; padding:24px; display:flex; flex-direction:column; gap:12px; align-items:stretch; }
+  .logo { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#00b2ff,#006aff); margin:0 auto 4px; display:flex; align-items:center; justify-content:center; }
+  .logo svg { width:38px; height:38px; fill:#fff; }
+  .pad h1 { margin:0; text-align:center; font-size:24px; }
+  .pad input { background:var(--pill); border:0; border-radius:12px; padding:14px 16px; font-size:16px; outline:none; width:100%; }
+  .pad .go { background:var(--blue); color:#fff; font-weight:600; padding:14px; border-radius:24px; font-size:17px; }
+  .pad .sw { color:var(--blue); padding:6px; font-weight:600; }
 </style>
 </head>
 <body>
 
 <div id="auth" class="screen on">
   <div class="pad">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.2 2 11.5c0 2.9 1.3 5.4 3.4 7.1V22l3.1-1.7c1.1.3 2.3.5 3.5.5 5.5 0 10-4.2 10-9.3S17.500 2 12 2zm1 12.500-2.500-2.700L5.700 14.500l5.300-5.600 2.600 2.700 4.700-2.700L13 14.500z"/></svg></div>
     <h1 id="atitle">Account banao</h1>
     <input id="u" placeholder="Username (a-z, 0-9, _)" autocapitalize="none" autocomplete="username" maxlength="15">
     <input id="p" type="password" placeholder="Password (kam se kam 6 akshar)" autocomplete="current-password">
     <div class="err" id="aerr"></div>
-    <button id="abtn">Account banao</button>
-    <button class="link" id="aswitch">Pehle se account hai? Login karo</button>
+    <button class="go" id="abtn">Account banao</button>
+    <button class="sw" id="aswitch">Pehle se account hai? Login karo</button>
   </div>
 </div>
 
 <div id="home" class="screen">
-  <header><span id="me"></span><button id="out">Logout</button></header>
-  <div class="row">
-    <input id="s" placeholder="Username dhoondo aur chat shuru karo" autocapitalize="none">
-    <button id="sbtn">Chat</button>
+  <div class="top"><h1>Chats</h1><span id="meav"></span></div>
+  <div class="search">
+    <input id="s" placeholder="Username dhoondo" autocapitalize="none">
+    <button id="sbtn" aria-label="Chat"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
   </div>
-  <div class="err" id="serr" style="padding:0 16px"></div>
+  <div class="err" id="serr"></div>
   <div id="list"></div>
 </div>
 
 <div id="chat" class="screen">
-  <header><button id="back">&larr; Peeche</button><span id="peer"></span><span></span></header>
+  <div class="top">
+    <button class="ib" id="back" aria-label="Peeche"><svg viewBox="0 0 24 24"><path d="M20 11H7.800l5.600-5.600L12 4l-8 8 8 8 1.400-1.400L7.800 13H20z"/></svg></button>
+    <span id="peerav"></span><span class="name" id="peer"></span>
+  </div>
   <div id="msgs"></div>
-  <form id="sendf">
+  <form class="comp" id="sendf">
     <input id="i" placeholder="Message likho..." autocomplete="off" maxlength="500">
-    <button type="submit">Bhejo</button>
+    <button type="submit" id="sb"></button>
   </form>
 </div>
 
@@ -85,7 +104,21 @@ const firebaseConfig = {
 const $ = id => document.getElementById(id);
 const show = id => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); };
 const DOM = '@chatapp.local';
+const SEND = '<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>';
 let signup = true, me = null, myName = '', peerId = null, peerName = '', msgRef = null, listRef = null;
+
+function av(n, s) {
+  let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) % 360;
+  const d = document.createElement('div'); d.className = 'av';
+  d.style.cssText = 'width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s * 0.42) + 'px;background:hsl(' + h + ' 55% 45%)';
+  d.textContent = n[0].toUpperCase();
+  return d;
+}
+function fmt(t) {
+  const d = new Date(t), n = new Date();
+  if (d.toDateString() === n.toDateString()) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString([], { day: 'numeric', month: 'short' });
+}
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(), db = firebase.database();
@@ -123,12 +156,14 @@ $('abtn').onclick = async () => {
   }
 };
 
-auth.onAuthStateChanged(async user => {
+auth.onAuthStateChanged(user => {
   if (listRef) { listRef.off(); listRef = null; }
   if (!user) { me = null; show('auth'); return; }
   me = user.uid;
   myName = user.email.replace(DOM, '');
-  $('me').textContent = '@' + myName;
+  const mine = av(myName, 38); mine.style.cursor = 'pointer'; mine.title = 'Logout';
+  mine.onclick = () => { if (confirm('Logout karna hai?')) auth.signOut(); };
+  $('meav').textContent = ''; $('meav').appendChild(mine);
   show('home');
   listRef = db.ref('userChats/' + me);
   listRef.on('value', snap => {
@@ -136,19 +171,24 @@ auth.onAuthStateChanged(async user => {
     snap.forEach(ch => { items.push({ id: ch.key, ...ch.val() }); });
     items.sort((a, b) => b.time - a.time);
     const box = $('list'); box.textContent = '';
-    if (!items.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'Abhi koi chat nahi. Upar username dhoondo.'; box.appendChild(d); return; }
+    if (!items.length) {
+      const d = document.createElement('div'); d.className = 'empty';
+      d.textContent = 'Abhi koi chat nahi. Upar username dhoondo aur baat shuru karo.';
+      box.appendChild(d); return;
+    }
     items.forEach(c => {
-      const d = document.createElement('div'); d.className = 'c';
-      const b = document.createElement('b'); b.textContent = '@' + c.username;
-      const s = document.createElement('span'); s.textContent = c.last || '';
-      d.append(b, s);
-      d.onclick = () => openChat(c.id, c.username);
-      box.appendChild(d);
+      const row = document.createElement('div'); row.className = 'c';
+      const mid = document.createElement('div'); mid.className = 'mid';
+      const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = c.username;
+      const pv = document.createElement('div'); pv.className = 'pv';
+      pv.textContent = (c.from === me ? 'Aap: ' : '') + (c.last || '') + '  ·  ' + fmt(c.time);
+      mid.append(nm, pv);
+      row.append(av(c.username, 52), mid);
+      row.onclick = () => openChat(c.id, c.username);
+      box.appendChild(row);
     });
   });
 });
-
-$('out').onclick = () => auth.signOut();
 
 $('sbtn').onclick = async () => {
   const n = $('s').value.trim().toLowerCase().replace(/^@/, '');
@@ -164,42 +204,50 @@ $('sbtn').onclick = async () => {
 };
 
 const chatId = () => [me, peerId].sort().join('_');
+const isEmoji = t => /^\p{Extended_Pictographic}{1,3}$/u.test(t);
 
 function openChat(uid, name) {
   peerId = uid; peerName = name;
-  $('peer').textContent = '@' + name;
+  $('peer').textContent = name;
+  $('peerav').textContent = ''; $('peerav').appendChild(av(name, 38));
   $('msgs').textContent = '';
+  $('i').value = ''; upd();
   show('chat');
   if (msgRef) msgRef.off();
+  let lastFrom = null, lastT = 0;
   msgRef = db.ref('chats/' + chatId()).limitToLast(100);
   msgRef.on('child_added', snap => {
-    const d = snap.val();
+    const d = snap.val(), box = $('msgs');
+    if (d.time - lastT > 600000) {
+      const t = document.createElement('div'); t.className = 'tm'; t.textContent = fmt(d.time) + ' ' + new Date(d.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      box.appendChild(t); lastFrom = null;
+    }
     const el = document.createElement('div');
-    el.className = 'm' + (d.from === me ? ' me' : '');
-    const b = document.createElement('div'); b.textContent = d.text;
-    const t = document.createElement('div'); t.className = 't';
-    t.textContent = new Date(d.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    el.append(b, t);
-    $('msgs').appendChild(el);
-    $('msgs').scrollTop = $('msgs').scrollHeight;
+    el.className = 'm' + (d.from === me ? ' me' : '') + (isEmoji(d.text) ? ' big' : '') + (lastFrom && lastFrom !== d.from ? ' gap' : '');
+    el.textContent = d.text;
+    box.appendChild(el);
+    lastFrom = d.from; lastT = d.time;
+    box.scrollTop = box.scrollHeight;
   });
 }
 
 $('back').onclick = () => { if (msgRef) { msgRef.off(); msgRef = null; } show('home'); };
 
+function upd() { $('sb').innerHTML = $('i').value.trim() ? SEND : '\u{1F44D}'; }
+$('i').addEventListener('input', upd); upd();
+
 $('sendf').addEventListener('submit', e => {
   e.preventDefault();
-  const text = $('i').value.trim();
-  if (!text) return;
-  $('i').value = '';
+  const text = $('i').value.trim() || '\u{1F44D}';
+  $('i').value = ''; upd();
   const time = firebase.database.ServerValue.TIMESTAMP;
   const key = db.ref('chats/' + chatId()).push().key;
   const up = {};
   up['chats/' + chatId() + '/' + key] = { from: me, text, time };
-  up['userChats/' + me + '/' + peerId] = { username: peerName, last: text.slice(0, 40), time };
-  up['userChats/' + peerId + '/' + me] = { username: myName, last: text.slice(0, 40), time };
+  up['userChats/' + me + '/' + peerId] = { username: peerName, last: text.slice(0, 40), from: me, time };
+  up['userChats/' + peerId + '/' + me] = { username: myName, last: text.slice(0, 40), from: me, time };
   db.ref().update(up).catch(x => alert('Send nahi hua: ' + x.message));
 });
 </script>
 </body>
-                   </html>
+</html>
