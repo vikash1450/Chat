@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Messenger</title>
 <style>
-  :root { --bg:#fff; --bar:#fff; --text:#050505; --muted:#65676b; --pill:#f0f2f5; --blue:#0084ff; --them:#e4e6eb; --line:#e4e6eb; }
+  :root { --bg:#fff; --bar:#fff; --text:#050505; --muted:#65676b; --pill:#f0f2f5; --blue:#0084ff; --them:#e4e6eb; }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#18191a; --bar:#242526; --text:#e4e6eb; --muted:#b0b3b8; --pill:#3a3b3c; --blue:#2d88ff; --them:#3a3b3c; --line:#3a3b3c; }
+    :root { --bg:#18191a; --bar:#242526; --text:#e4e6eb; --muted:#b0b3b8; --pill:#3a3b3c; --blue:#2d88ff; --them:#3a3b3c; }
   }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; margin:0; }
@@ -26,7 +26,7 @@
   .search input { flex:1; background:var(--pill); border:0; border-radius:20px; padding:10px 16px; font-size:16px; outline:none; }
   .search button { width:40px; height:40px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; }
   .search svg { width:20px; height:20px; fill:#fff; }
-  .err { color:#e41e3f; font-size:14px; padding:0 16px; min-height:0; }
+  .err { color:#e41e3f; font-size:14px; padding:0 16px; }
   #list { flex:1; overflow-y:auto; }
   .c { display:flex; align-items:center; gap:12px; padding:10px 14px; }
   .c:active { background:var(--pill); }
@@ -35,18 +35,31 @@
   .c .pv { color:var(--muted); font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .empty { padding:40px 24px; color:var(--muted); text-align:center; }
   #msgs { flex:1; overflow-y:auto; padding:12px 10px; display:flex; flex-direction:column; gap:2px; }
+  .intro { display:flex; flex-direction:column; align-items:center; gap:4px; padding:16px 0 20px; }
+  .in { font-size:20px; font-weight:700; margin-top:8px; }
+  .is { color:var(--muted); font-size:14px; }
+  .acts { display:flex; gap:28px; margin-top:12px; }
+  .act { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:13px; }
+  .act span { width:44px; height:44px; border-radius:50%; background:var(--pill); display:flex; align-items:center; justify-content:center; font-size:20px; }
   .tm { align-self:center; color:var(--muted); font-size:12px; margin:10px 0 6px; }
   .m { max-width:75%; padding:8px 12px; border-radius:18px; background:var(--them); word-wrap:break-word; font-size:16px; line-height:1.3; align-self:flex-start; }
   .m.me { align-self:flex-end; background:var(--blue); color:#fff; }
   .m.big { font-size:34px; background:none; padding:0 4px; }
+  .m.pic { padding:3px; }
+  .m img { max-width:100%; max-height:320px; border-radius:15px; display:block; }
   .m.gap { margin-top:8px; }
-  .comp { display:flex; align-items:center; gap:8px; padding:8px 10px; padding-bottom:calc(8px + env(safe-area-inset-bottom,0px)); background:var(--bar); }
-  .comp input { flex:1; background:var(--pill); border:0; border-radius:20px; padding:10px 16px; font-size:16px; outline:none; }
-  .comp button { width:40px; height:40px; font-size:26px; display:flex; align-items:center; justify-content:center; }
+  #emo { display:none; flex-wrap:wrap; gap:2px; padding:8px 10px; background:var(--bar); border-top:1px solid var(--pill); }
+  #emo button { font-size:26px; width:44px; height:44px; }
+  .comp { display:flex; align-items:center; gap:6px; padding:8px 10px; padding-bottom:calc(8px + env(safe-area-inset-bottom,0px)); background:var(--bar); }
+  .comp input { flex:1; min-width:0; background:var(--pill); border:0; border-radius:20px; padding:10px 14px; font-size:16px; outline:none; }
+  .comp button { width:38px; height:38px; font-size:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .comp .cam { background:var(--blue); border-radius:50%; font-size:18px; }
   .comp svg { width:26px; height:26px; fill:var(--blue); }
-  .pad { margin:auto 0; padding:24px; display:flex; flex-direction:column; gap:12px; align-items:stretch; }
-  .logo { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#00b2ff,#006aff); margin:0 auto 4px; display:flex; align-items:center; justify-content:center; }
-  .logo svg { width:38px; height:38px; fill:#fff; }
+  #blk { display:none; text-align:center; padding:14px; color:var(--muted); background:var(--bar); padding-bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
+  #pm { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); align-items:center; justify-content:center; z-index:9; }
+  #pm .card { background:var(--bar); border-radius:20px; padding:28px 36px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .pad { margin:auto 0; padding:24px; display:flex; flex-direction:column; gap:12px; }
+  .logo { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#00b2ff,#006aff); margin:0 auto 4px; display:flex; align-items:center; justify-content:center; font-size:34px; }
   .pad h1 { margin:0; text-align:center; font-size:24px; }
   .pad input { background:var(--pill); border:0; border-radius:12px; padding:14px 16px; font-size:16px; outline:none; width:100%; }
   .pad .go { background:var(--blue); color:#fff; font-weight:600; padding:14px; border-radius:24px; font-size:17px; }
@@ -57,7 +70,7 @@
 
 <div id="auth" class="screen on">
   <div class="pad">
-    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.2 2 11.5c0 2.9 1.3 5.4 3.4 7.1V22l3.1-1.7c1.1.3 2.3.5 3.5.5 5.5 0 10-4.2 10-9.3S17.500 2 12 2zm1 12.500-2.500-2.700L5.700 14.500l5.300-5.600 2.600 2.700 4.700-2.700L13 14.500z"/></svg></div>
+    <div class="logo">&#128172;</div>
     <h1 id="atitle">Account banao</h1>
     <input id="u" placeholder="Username (a-z, 0-9, _)" autocapitalize="none" autocomplete="username" maxlength="15">
     <input id="p" type="password" placeholder="Password (kam se kam 6 akshar)" autocomplete="current-password">
@@ -83,11 +96,20 @@
     <span id="peerav"></span><span class="name" id="peer"></span>
   </div>
   <div id="msgs"></div>
+  <div id="emo"></div>
+  <div id="blk">Aapne is user ko block kiya hai. Upar <b>Unblock</b> dabao.</div>
   <form class="comp" id="sendf">
+    <button type="button" class="cam" id="cam" aria-label="Camera">&#128247;</button>
     <input id="i" placeholder="Message likho..." autocomplete="off" maxlength="500">
+    <button type="button" id="emb" aria-label="Emoji">&#128522;</button>
+    <button type="button" id="gal" aria-label="Photo">&#128444;&#65039;</button>
     <button type="submit" id="sb"></button>
   </form>
+  <input type="file" id="fc" accept="image/*" capture="environment" hidden>
+  <input type="file" id="fg" accept="image/*" hidden>
 </div>
+
+<div id="pm"><div class="card" id="pcard"></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -105,7 +127,9 @@ const $ = id => document.getElementById(id);
 const show = id => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); };
 const DOM = '@chatapp.local';
 const SEND = '<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>';
+const EMOJIS = ['😀','😂','😍','😘','😎','🥰','😭','😡','👍','🙏','🔥','💯','❤️','🎉','😅','🤔','😴','🥺','😜','🤝','👏','💪','🎮','😈'];
 let signup = true, me = null, myName = '', peerId = null, peerName = '', msgRef = null, listRef = null;
+let blkRef = null, blockedByMe = false, blkBtn = null, joinedTxt = '';
 
 function av(n, s) {
   let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) % 360;
@@ -114,10 +138,10 @@ function av(n, s) {
   d.textContent = n[0].toUpperCase();
   return d;
 }
+const hm = t => new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 function fmt(t) {
-  const d = new Date(t), n = new Date();
-  if (d.toDateString() === n.toDateString()) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  return d.toLocaleDateString([], { day: 'numeric', month: 'short' });
+  const d = new Date(t);
+  return d.toDateString() === new Date().toDateString() ? hm(t) : d.toLocaleDateString([], { day: 'numeric', month: 'short' });
 }
 
 firebase.initializeApp(firebaseConfig);
@@ -139,7 +163,7 @@ $('abtn').onclick = async () => {
   try {
     if (signup) {
       const c = await auth.createUserWithEmailAndPassword(u + DOM, p);
-      await db.ref('users/' + c.user.uid).set({ username: u });
+      await db.ref('users/' + c.user.uid).set({ username: u, joined: firebase.database.ServerValue.TIMESTAMP });
       await db.ref('usernames/' + u).set(c.user.uid);
     } else {
       await auth.signInWithEmailAndPassword(u + DOM, p);
@@ -161,7 +185,7 @@ auth.onAuthStateChanged(user => {
   if (!user) { me = null; show('auth'); return; }
   me = user.uid;
   myName = user.email.replace(DOM, '');
-  const mine = av(myName, 38); mine.style.cursor = 'pointer'; mine.title = 'Logout';
+  const mine = av(myName, 38); mine.style.cursor = 'pointer';
   mine.onclick = () => { if (confirm('Logout karna hai?')) auth.signOut(); };
   $('meav').textContent = ''; $('meav').appendChild(mine);
   show('home');
@@ -204,50 +228,143 @@ $('sbtn').onclick = async () => {
 };
 
 const chatId = () => [me, peerId].sort().join('_');
-const isEmoji = t => /^\p{Extended_Pictographic}{1,3}$/u.test(t);
+const isEmoji = t => /^\p{Extended_Pictographic}{1,3}$/u.test(t || '');
+
+function mkAct(icon, label) {
+  const b = document.createElement('button'); b.className = 'act'; b.type = 'button';
+  const s = document.createElement('span'); s.textContent = icon;
+  const l = document.createElement('div'); l.textContent = label;
+  b.append(s, l);
+  return { b, l };
+}
+
+function buildIntro() {
+  const d = document.createElement('div'); d.className = 'intro';
+  const n = document.createElement('div'); n.className = 'in'; n.textContent = peerName;
+  const s = document.createElement('div'); s.className = 'is'; s.id = 'joined'; s.textContent = '@' + peerName;
+  const row = document.createElement('div'); row.className = 'acts';
+  const pr = mkAct('\u{1F464}', 'Profile');
+  pr.b.onclick = () => {
+    const c = $('pcard'); c.textContent = '';
+    const a = av(peerName, 96), t1 = document.createElement('div'), t2 = document.createElement('div');
+    t1.className = 'in'; t1.textContent = peerName; t2.className = 'is'; t2.textContent = $('joined').textContent;
+    c.append(a, t1, t2); $('pm').style.display = 'flex';
+  };
+  const bk = mkAct('\u{1F6AB}', 'Block'); blkBtn = bk.l;
+  bk.b.onclick = () => {
+    const r = db.ref('blocks/' + me + '/' + peerId);
+    if (blockedByMe) r.remove();
+    else if (confirm(peerName + ' ko block karein?')) r.set(true);
+  };
+  row.append(pr.b, bk.b);
+  d.append(av(peerName, 96), n, s, row);
+  return d;
+}
+$('pm').onclick = () => { $('pm').style.display = 'none'; };
 
 function openChat(uid, name) {
-  peerId = uid; peerName = name;
+  peerId = uid; peerName = name; blockedByMe = false;
   $('peer').textContent = name;
   $('peerav').textContent = ''; $('peerav').appendChild(av(name, 38));
-  $('msgs').textContent = '';
-  $('i').value = ''; upd();
+  $('msgs').textContent = ''; $('msgs').appendChild(buildIntro());
+  $('i').value = ''; $('emo').style.display = 'none'; upd();
   show('chat');
+  db.ref('users/' + uid + '/joined').get().then(s => {
+    if (s.exists() && peerId === uid) $('joined').textContent = '@' + name + ' · Joined ' + new Date(s.val()).toLocaleDateString([], { month: 'short', year: 'numeric' });
+  }).catch(() => {});
+  if (blkRef) blkRef.off();
+  blkRef = db.ref('blocks/' + me + '/' + uid);
+  blkRef.on('value', s => {
+    blockedByMe = s.exists();
+    $('sendf').style.display = blockedByMe ? 'none' : 'flex';
+    $('blk').style.display = blockedByMe ? 'block' : 'none';
+    if (blkBtn) blkBtn.textContent = blockedByMe ? 'Unblock' : 'Block';
+  });
   if (msgRef) msgRef.off();
   let lastFrom = null, lastT = 0;
   msgRef = db.ref('chats/' + chatId()).limitToLast(100);
   msgRef.on('child_added', snap => {
     const d = snap.val(), box = $('msgs');
     if (d.time - lastT > 600000) {
-      const t = document.createElement('div'); t.className = 'tm'; t.textContent = fmt(d.time) + ' ' + new Date(d.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const t = document.createElement('div'); t.className = 'tm';
+      t.textContent = fmt(d.time) + ' ' + hm(d.time);
       box.appendChild(t); lastFrom = null;
     }
     const el = document.createElement('div');
-    el.className = 'm' + (d.from === me ? ' me' : '') + (isEmoji(d.text) ? ' big' : '') + (lastFrom && lastFrom !== d.from ? ' gap' : '');
-    el.textContent = d.text;
+    el.className = 'm' + (d.from === me ? ' me' : '') + (d.img ? ' pic' : '') + (isEmoji(d.text) ? ' big' : '') + (lastFrom && lastFrom !== d.from ? ' gap' : '');
+    if (d.img) { const im = document.createElement('img'); im.src = d.img; el.appendChild(im); }
+    else el.textContent = d.text;
     box.appendChild(el);
     lastFrom = d.from; lastT = d.time;
     box.scrollTop = box.scrollHeight;
   });
 }
 
-$('back').onclick = () => { if (msgRef) { msgRef.off(); msgRef = null; } show('home'); };
+$('back').onclick = () => {
+  if (msgRef) { msgRef.off(); msgRef = null; }
+  if (blkRef) { blkRef.off(); blkRef = null; }
+  show('home');
+};
 
 function upd() { $('sb').innerHTML = $('i').value.trim() ? SEND : '\u{1F44D}'; }
 $('i').addEventListener('input', upd); upd();
+
+EMOJIS.forEach(e => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = e;
+  b.onclick = () => { $('i').value += e; upd(); };
+  $('emo').appendChild(b);
+});
+$('emb').onclick = () => { const e = $('emo'); e.style.display = e.style.display === 'flex' ? 'none' : 'flex'; };
+
+async function send(text, img) {
+  try {
+    const b = await db.ref('blocks/' + peerId + '/' + me).get();
+    if (b.exists()) return alert('Is user ne aapko block kiya hai.');
+  } catch (e) {}
+  const time = firebase.database.ServerValue.TIMESTAMP;
+  const key = db.ref('chats/' + chatId()).push().key;
+  const last = img ? '\u{1F4F7} Photo' : text.slice(0, 40);
+  const up = {};
+  up['chats/' + chatId() + '/' + key] = img ? { from: me, img, time } : { from: me, text, time };
+  up['userChats/' + me + '/' + peerId] = { username: peerName, last, from: me, time };
+  up['userChats/' + peerId + '/' + me] = { username: myName, last, from: me, time };
+  db.ref().update(up).catch(x => alert('Send nahi hua: ' + x.message));
+}
 
 $('sendf').addEventListener('submit', e => {
   e.preventDefault();
   const text = $('i').value.trim() || '\u{1F44D}';
   $('i').value = ''; upd();
-  const time = firebase.database.ServerValue.TIMESTAMP;
-  const key = db.ref('chats/' + chatId()).push().key;
-  const up = {};
-  up['chats/' + chatId() + '/' + key] = { from: me, text, time };
-  up['userChats/' + me + '/' + peerId] = { username: peerName, last: text.slice(0, 40), from: me, time };
-  up['userChats/' + peerId + '/' + me] = { username: myName, last: text.slice(0, 40), from: me, time };
-  db.ref().update(up).catch(x => alert('Send nahi hua: ' + x.message));
+  send(text);
 });
+
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onerror = rej;
+    r.onload = () => {
+      const im = new Image();
+      im.onerror = rej;
+      im.onload = () => {
+        const k = Math.min(1, 800 / Math.max(im.width, im.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        res(c.toDataURL('image/jpeg', 0.6));
+      };
+      im.src = r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+async function onPic(e) {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try { send('', await shrink(f)); } catch (x) { alert('Photo nahi chuni ja saki'); }
+}
+$('cam').onclick = () => $('fc').click();
+$('gal').onclick = () => $('fg').click();
+$('fc').onchange = onPic; $('fg').onchange = onPic;
 </script>
 </body>
 </html>
